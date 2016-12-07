@@ -24,22 +24,47 @@ app.use(express.static('client_files'));//mappa tutte le richieste di files del 
 //use: for both POST and GET
 
 //for templates
-var results=require('./create_results.js');
+var create_results=require('./create_results.js');
 
 app.get('/search_results.html',function(request,response){//search_results.html è il template
 	var url_parts = url.parse(request.url, true);
 	var getVar = url_parts.query; //estraggo gli attributi dalla richiesta
-	var ret=results.main(getVar);//chiamo la funzione main del modulo results che restituisce tutti i parametri per il binding del template e lo statusCode
+	var servlet_response=create_results.main(getVar);//chiamo la funzione main del modulo results che restituisce tutti i parametri per il binding del template e lo statusCode
+	if(servlet_response.statusCode===400){
+		Error404(request,response);
+	}
+	else{
+		bind.toFile(
+			create_results.path,
+			servlet_response.bindingObject,//risultati dalla funzione results.main()
+			function(data) {
+				//write response
+				response.writeHead(servlet_response.statusCode, headers);//lo statusCode viene deciso dalla funzione results.main()
+				response.end(data);
+			}
+		);
+	}
+});
+
+function Error404(req,res){
 	bind.toFile(
-		'tpl/search_results.tpl',
-		ret.bindingObject,//risultati dalla funzione results.main()
-		function(data) {
-			//write response
-			response.writeHead(ret.statusCode, headers);//lo statusCode viene deciso dalla funzione results.main()
-			response.end(data);
+		'errors/404.html',
+		{},
+		function(data){
+			res.writeHead(404, headers);//lo statusCode viene deciso dalla funzione results.main()
+			res.end(data);
 		}
 	);
-});
+
+}
+
+app.use(Error404);
+  
+  // Handle 500
+  app.use(function(error, req, res, next) {
+     res.send('500: Internal Server Error', 500);
+  });
+
 
 
 listener=app.listen(app.get('port'), function() {//start server
