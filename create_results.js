@@ -5,8 +5,12 @@
 */
 function main(request){
 	console.log(request);
-	return {results:[{fonte:"asd",link:"/",shortlink:"home"}]};
-
+	return {
+		statusCode:200,
+		bindingObject:{
+			results:[{fonte:"asd",link:"/",shortlink:"home"}]
+		}
+	};
 }
 
 module.exports = {

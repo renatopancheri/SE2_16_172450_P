@@ -1,8 +1,10 @@
 //Libraries (default)
 var http = require('http');
-
-//for templates
 var bind = require('bind');
+var express = require('express');
+var app = express();//instantiate express
+var url=require('url');
+//default settings(ip,port,headers)
 var ip='127.0.0.1';
 var port=1337;
 
@@ -16,32 +18,30 @@ headers["Access-Control-Allow-Headers"] = "X-Requested-With, X-HTTP-Method-Overr
 headers["Content-Type"] = "text/html";//format response
 
 
-var express = require('express');
-var url=require('url');
-
-var results=require('./create_results.js');
-//instantiate express
-var app = express();
-
 app.set('port', (process.env.PORT || port));
+
 app.use(express.static('client_files'));//mappa tutte le richieste di files del tipo http://ip:port/* in client_files/*
 //use: for both POST and GET
 
+//for templates
+var results=require('./create_results.js');
+
 app.get('/search_results.html',function(request,response){//search_results.html è il template
-	response.writeHead(200, headers);
 	var url_parts = url.parse(request.url, true);
 	var getVar = url_parts.query; //estraggo gli attributi dalla richiesta
-	var ret=results.main(getVar);//chiamo la funzione main del modulo results che restituisce tutti i parametri per il binding del template
-	bind.toFile('tpl/search_results.tpl',
-	ret,//risultati dalla funzione results.main()
-    function(data) 
-    {
-        //write response
-        response.end(data);
-    });
+	var ret=results.main(getVar);//chiamo la funzione main del modulo results che restituisce tutti i parametri per il binding del template e lo statusCode
+	bind.toFile(
+		'tpl/search_results.tpl',
+		ret.bindingObject,//risultati dalla funzione results.main()
+		function(data) {
+			//write response
+			response.writeHead(ret.statusCode, headers);//lo statusCode viene deciso dalla funzione results.main()
+			response.end(data);
+		}
+	);
 });
 
 
-listener=app.listen(app.get('port'), function() {
+listener=app.listen(app.get('port'), function() {//start server
   console.log('Node app is running on port', app.get('port'),listener.address());
 });
