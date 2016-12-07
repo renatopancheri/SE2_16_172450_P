@@ -2,7 +2,7 @@
   "name": "progetto",
   "version": "1.0.0",
   "description": "progetto finale",
-  "main": "index.js",
+  "main": "server.js",
   "dependencies": {
     "bind": "^0.1.7",
     "express": "^4.14.0"
