@@ -1,5 +1,5 @@
 //Libraries (default)
-var http = require('http');
+
 var bind = require('bind');
 var express = require('express');
 var app = express();//instantiate express
@@ -27,24 +27,30 @@ app.use(express.static('client_files'));//mappa tutte le richieste di files del 
 var create_results=require('./create_results.js');
 
 app.get('/search_results.html',function(request,response){//search_results.html è il template
+	function callback(servlet_response){
+		if(servlet_response.statusCode===400){
+			sendError(request,response,400);
+		}
+		else{
+			bind.toFile(
+				create_results.path,
+				servlet_response.bindingObject,//risultati dalla funzione results.main()
+				function(data) {
+					//write response
+					response.writeHead(servlet_response.statusCode, headers);//lo statusCode viene deciso dalla funzione results.main()
+					response.end(data);
+				}
+			);
+		}
+	}
+
 	var url_parts = url.parse(request.url, true);
 	var getVar = url_parts.query; //estraggo gli attributi dalla richiesta
-	var servlet_response=create_results.main(getVar);//chiamo la funzione main del modulo results che restituisce tutti i parametri per il binding del template e lo statusCode
-	if(servlet_response.statusCode===400){
-		sendError(request,response,400);
-	}
-	else{
-		bind.toFile(
-			create_results.path,
-			servlet_response.bindingObject,//risultati dalla funzione results.main()
-			function(data) {
-				//write response
-				response.writeHead(servlet_response.statusCode, headers);//lo statusCode viene deciso dalla funzione results.main()
-				response.end(data);
-			}
-		);
-	}
+	create_results.main(getVar,callback);//chiamo la funzione main del modulo results che restituisce tutti i parametri per il binding del template e lo statusCode
+	
 });
+
+
 
 /*
   questa funzione viene usata per inviare un messaggio di errore 
@@ -72,6 +78,7 @@ app.use(function(req,res){
 // Handle 500
 //questo invece ha una funzione con 4 parametri , catcha un errore (500 HTTP)
 app.use(function(error, req, res, next) {
+	console.log(error);
 	sendError(req,res,500);
 });
 
