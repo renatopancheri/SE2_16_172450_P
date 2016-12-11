@@ -24,23 +24,56 @@ app.use(express.static('client_files'));//mappa tutte le richieste di files del 
 //use: for both POST and GET
 
 //for templates
-var results=require('./create_results.js');
+var create_results=require('./create_results.js');
 
 app.get('/search_results.html',function(request,response){//search_results.html è il template
 	var url_parts = url.parse(request.url, true);
 	var getVar = url_parts.query; //estraggo gli attributi dalla richiesta
-	var ret=results.main(getVar);//chiamo la funzione main del modulo results che restituisce tutti i parametri per il binding del template e lo statusCode
-	bind.toFile(
-		'tpl/search_results.tpl',
-		ret.bindingObject,//risultati dalla funzione results.main()
-		function(data) {
-			//write response
-			response.writeHead(ret.statusCode, headers);//lo statusCode viene deciso dalla funzione results.main()
-			response.end(data);
-		}
-	);
+	var servlet_response=create_results.main(getVar);//chiamo la funzione main del modulo results che restituisce tutti i parametri per il binding del template e lo statusCode
+	if(servlet_response.statusCode===400){
+		sendError(request,response,400);
+	}
+	else{
+		bind.toFile(
+			create_results.path,
+			servlet_response.bindingObject,//risultati dalla funzione results.main()
+			function(data) {
+				//write response
+				response.writeHead(servlet_response.statusCode, headers);//lo statusCode viene deciso dalla funzione results.main()
+				response.end(data);
+			}
+		);
+	}
 });
 
+/*
+  questa funzione viene usata per inviare un messaggio di errore 
+  diverso a seconda dell statuscode.
+
+
+*/
+function sendError(req,res,code){
+	bind.toFile(
+		'errors/'+code+'.html',
+		{},
+		function(data){
+			res.writeHead(code, headers);//lo statusCode viene deciso dalla funzione results.main()
+			res.end(data);
+		}
+	);
+
+}
+//Handle 404 
+//questo app.use senza parametri catcha tutto quello che non viene preso prima, cioè i 404
+app.use(function(req,res){
+	sendError(req,res,404);
+});
+
+// Handle 500
+//questo invece ha una funzione con 4 parametri , catcha un errore (500 HTTP)
+app.use(function(error, req, res, next) {
+	sendError(req,res,500);
+});
 
 listener=app.listen(app.get('port'), function() {//start server
   console.log('Node app is running on port', app.get('port'),listener.address());
