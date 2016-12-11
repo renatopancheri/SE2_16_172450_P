@@ -13,6 +13,9 @@ function main(request){
 	if(keys[0]!=="search"){
 		return {statusCode:400};
 	}
+	if(request.search===''){
+		return {statusCode:400};
+	}
 	//
 	return {
 		statusCode:200,
