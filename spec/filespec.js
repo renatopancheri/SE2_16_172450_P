@@ -1,5 +1,5 @@
 var request=require("request");
-var url="http://127.0.0.1:1337";
+var url="http://127.0.0.1:5000";
 describe("testGet", function() {
 	it("/", testGet("/",200));
 	it("/index.html", testGet("/index.html",200));

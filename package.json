@@ -5,11 +5,12 @@
   "main": "server.js",
   "dependencies": {
     "bind": "^0.1.7",
-    "express": "^4.14.0"
+    "express": "^4.14.0",
+    "querystring": "^0.2.0"
   },
-  "repository":{
-    "type":"git",
-    "url":"git+https://github.com/renatopancheri/SE2_16_172450_P.git"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/renatopancheri/SE2_16_172450_P.git"
   },
   "devDependencies": {},
   "scripts": {

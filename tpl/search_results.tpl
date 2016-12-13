@@ -3,12 +3,13 @@
 	<head>
 		<!-- Here goes the metadata -->  
 		<meta charset="utf-8">
-		<script  type="text/javascript" src="jquery.js"></script>
-		<script  type="text/javascript" src="search_results.js"></script>
+		<link rel="stylesheet" href="search_results.css">
 		<title> Progetto</title>
 	</head>
 	<body>
 		<h1>Risultati:</h1>
-		(:results ~ [:fonte:] :  <a href="[:link:]">[:shortlink:]</a> <BR>:)
+		<ul>
+		(:results ~ <li><div class="elemento">[:fonte:] :  <a href="[:link:]">[:shortlink:]</a> </div></li>:)
+		</ul>
 	</body>
 </html>
