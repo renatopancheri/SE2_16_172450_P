@@ -1,0 +1,63 @@
+# this is an example of the Uber API
+# as a demonstration of an API spec in YAML
+swagger: '2.0'
+info:
+  title: Progetto 172450
+  description: docs
+  version: "1.0.0"
+# the domain of the service
+host: pacific-dawn-92299.herokuapp.com
+# array of all schemes that your API supports
+schemes:
+  - https
+# will be prefixed to all paths
+basePath: /
+produces:
+  - text/html
+paths:
+  /:
+    get:
+      summary: root form search
+      description: |
+        form per cercare la parola chiave
+        proper display order.
+      tags:
+        - Root
+      responses:
+        200:
+          description: pagina con il form per la ricerca
+  /search_result.html:
+    get:
+      summary: risultati della ricerca
+      description: |
+        Restituisce i risultati della ricerca effetutata dalla root path.
+      parameters:
+        - name: search
+          in: query
+          description: la stringa da cercare
+          required: true
+          type: string
+      tags:
+        - Search_results
+      responses:
+        200:
+          description: Una pagina html con i risultati della ricerca
+          schema:
+            $ref: '#/definitions/Servlet_response'
+        400:
+          description: errore 400 se i parametri dati in ingresso sono errati
+        500:
+          description: errore 500 se ci sono stati problemi nel server
+          
+ 
+definitions:
+  Servlet_response:
+    type: object
+    properties:
+      path:
+        type: string
+        description: path del file tpl
+      bindingObject:
+        type: object
+        description: oggetto bassato al binding del tpl
+      
