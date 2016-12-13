@@ -12,3 +12,13 @@ commenti e documentazione viene messa nel dev e poi trasferita sugli altri branc
 nuovo codice viene messo nel work e poi trasferito in dev
 nel branch dev c'è quindi sempre una versione apparentemente funzionante e commentata
 il branch work è invece "work in progress"
+
+
+per il test : andare sul branch test e fare npm test(sugli altri branch non ci sono nè le spec nè lo script test in package.json)
+
+start: npm start
+
+127.0.0.1:5000
+
+HEROKU:https://pacific-dawn-92299.herokuapp.com/
+
