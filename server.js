@@ -82,6 +82,6 @@ app.use(function(error, req, res, next) {
 	sendError(req,res,500);
 });
 
-listener=app.listen(port, function() {//start server
+listener=app.listen(app.get('port'), function() {//start server
   //console.log('Node app is running on port', app.get('port'),listener.address());
 });
