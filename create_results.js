@@ -12,13 +12,16 @@ function main(request,callback){
 	var results=[];
 	var keys=Object.keys(request);
 	if(keys.length!==1){
-		return {statusCode:400};
+		callback({statusCode:400});
+		return;
 	}
 	if(keys[0]!=="search"){
-		return {statusCode:400};
+		callback({statusCode:400});
+		return;
 	}
 	if(request.search===''){//controllo che i parametri siano corretti
-		return {statusCode:400};
+		callback({statusCode:400});
+		return;
 	}
 	addUnitn(results,request.search,callback,flags);
 	addEsse3(results,request.search,callback,flags);
