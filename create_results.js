@@ -20,8 +20,8 @@ function main(request,callback){
 	if(request.search===''){//controllo che i parametri siano corretti
 		return {statusCode:400};
 	}
-	addunitn(results,request.search,callback,flags);
-	addesse3(results,request.search,callback,flags);
+	addUnitn(results,request.search,callback,flags);
+	addEsse3(results,request.search,callback,flags);
 }
 
 /*
@@ -32,7 +32,7 @@ function main(request,callback){
   a questo punto mi basta estrarre i parametri che mi interessano
 
 */
-function addunitn(results,keyword,maincallback,flags){
+function addUnitn(results,keyword,mainCallback,flags){
 	var url="https://www.googleapis.com/customsearch/v1element?key=AIzaSyCVAXiUzRYsML1Pv6RwSG1gunmMikTzQqY&rsz=filtered_cse&num=10&hl=it&prettyPrint=false&source=gcsc&gss=.it&sig=0c3990ce7a056ed50667fe0c3873c9b6&cx=016117172621427316264:hk17am2yce8&q="+keyword+"&googlehost=www.google.com&oq="+keyword+"&gs_l=partner.3..0l10.8377.9264.2.9527.5.0.5.0.1.0.0.0..0.0.gsnos%2Cn%3D13.1..0.9317j71547943j6j1..1ac.1.25.partner..0.19.1555.Bf_G3UxDUFU&callback=google.search.Search.apiary17166";
 	var callback = function(response) {
 		var str = '';
@@ -49,7 +49,7 @@ function addunitn(results,keyword,maincallback,flags){
 				results.push({fonte:"unitn",link:j.results[i].clicktrackUrl,shortlink:j.results[i].title});
 			}
 			flags[0]=true;
-			checkcallback(results,maincallback,flags);
+			checkCallback(results,mainCallback,flags);
 		});
 	}
 	https.get(url, callback).end();
@@ -59,7 +59,7 @@ function addunitn(results,keyword,maincallback,flags){
   in questo caso mi viene ritornata ua pagina html
 
 */
-function addesse3(results,keyword,maincallback,flags){
+function addEsse3(results,keyword,mainCallback,flags){
 	var params=querystring.stringify({//questi sono i parametri che manda il form in esse3
 		annoAccademico:"2016",
 		facoltaPoli:"X",
@@ -103,7 +103,7 @@ function addesse3(results,keyword,maincallback,flags){
 
 			}
 			flags[1]=true;
-			checkcallback(results,maincallback,flags);
+			checkCallback(results,mainCallback,flags);
 			
 		});
 	}
@@ -116,7 +116,7 @@ function addesse3(results,keyword,maincallback,flags){
   controllo che si possa fare la callback al server (solo su tutte le richieste sono state risposte)
 
 */
-function checkcallback(results,callback,flags){
+function checkCallback(results,callback,flags){
 	var check=true;
 	for(var i=0;i<flags.length;i++){//se tutti i flag sono a true
 		check=check&&flags[i];

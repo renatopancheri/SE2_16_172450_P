@@ -6,7 +6,7 @@ var app = express();//instantiate express
 var url=require('url');
 //default settings(ip,port,headers)
 var ip='127.0.0.1';
-var port=1337;
+var port=4337;
 
 var headers = {};//definisco gli header di default
 headers["Access-Control-Allow-Origin"] = "*"; //for cross enviroment request
