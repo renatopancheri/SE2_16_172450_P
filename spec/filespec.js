@@ -8,7 +8,7 @@ describe("testGet", function() {
 	it("/search_results.html?robe=123", testGet("/search_results.html?robe=123",400));
 	it("/search_results.html?search=as&abc=123", testGet("/search_results.html?search=as&abc=123",400));
 	it("/search_results.html?search=", testGet("/search_results.html?search=",400));
-	it("/search_results.html?search=123", testGet("/search_results.html?search=123",200));
+	it("/search_results.html?search=123", testGet("/search_results.html?search=123",200),25000);
 });
 
 
